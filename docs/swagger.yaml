@@ -1,0 +1,111 @@
+basePath: /api/v1
+definitions:
+  helper.ResponseBody:
+    properties:
+      response: {}
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: A Movies service API in Go using Gin framework
+  title: Movies Service API
+  version: "1.0"
+paths:
+  /movies:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of movies by genre
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Size of the page
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: Genre of the movies
+        in: query
+        name: genre
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of movies
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: Get Movies
+      tags:
+      - Movies
+  /movies/favorite:
+    post:
+      consumes:
+      - application/json
+      description: Add Movie to Favorites
+      parameters:
+      - description: movie_id
+        in: body
+        name: movie_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: movie extended info from TMDB API
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: Add Movie to Favorites
+      tags:
+      - Favorite Movies
+  /movies/import:
+    get:
+      consumes:
+      - application/json
+      description: import data from google sheet
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: CSV import
+      tags:
+      - import
+  /movies/info/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get more info about a movie
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Size of the page
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: Genre of the movies
+        in: query
+        name: genre
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of movies
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: Get Extended Moview info
+      tags:
+      - Movies extended info
+swagger: "2.0"

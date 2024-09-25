@@ -1,0 +1,168 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A Movies service API in Go using Gin framework",
+        "title": "Movies Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/movies": {
+            "get": {
+                "description": "Get a paginated list of movies by genre",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Get Movies",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Size of the page",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Genre of the movies",
+                        "name": "genre",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of movies",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/favorite": {
+            "post": {
+                "description": "Add Movie to Favorites",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Favorite Movies"
+                ],
+                "summary": "Add Movie to Favorites",
+                "parameters": [
+                    {
+                        "description": "movie_id",
+                        "name": "movie_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "movie extended info from TMDB API",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/import": {
+            "get": {
+                "description": "import data from google sheet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "import"
+                ],
+                "summary": "CSV import",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/info/{id}": {
+            "get": {
+                "description": "Get more info about a movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies extended info"
+                ],
+                "summary": "Get Extended Moview info",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Size of the page",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Genre of the movies",
+                        "name": "genre",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of movies",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "helper.ResponseBody": {
+            "type": "object",
+            "properties": {
+                "response": {}
+            }
+        }
+    }
+}

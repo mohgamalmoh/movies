@@ -1,0 +1,43 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    environment:
+      GET_HOSTS_FROM: dns
+      POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5450:5432
+  redis:
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=pass
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 6379:6379
+  app:
+    build: .
+    command: ["go", "run", "main.go", "api"]
+    privileged: true
+    environment:
+      GET_HOSTS_FROM: dns
+      POSTGRES_DB: dev
+      POSTGRES_USER: postgres-dev
+      POSTGRES_PASSWORD: password
+      GIN_MODE: release
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - /usr/bin/docker:/bin/docker
+      - /usr/local/bin/docker:/bin/docker
+      - .:/go/src/app/
+    ports:
+      - "443:443"
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis

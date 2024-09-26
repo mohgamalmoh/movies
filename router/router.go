@@ -21,7 +21,9 @@ func NewRouter(moviesController *movies.Controller) *gin.Engine {
 
 	moviesRouter := baseRouter.Group("/movies")
 	moviesRouter.GET("", moviesController.FindAll)
-	moviesRouter.GET("info/:id", moviesController.GetExtendedMovieInfo)
+	moviesRouter.POST("", moviesController.Create)
+	moviesRouter.PUT("", moviesController.Update)
+	moviesRouter.GET(":id/info/", moviesController.GetExtendedMovieInfo)
 	moviesRouter.POST("favorite", moviesController.AddToFavorites)
 	moviesRouter.GET("import", moviesController.CSVImport)
 

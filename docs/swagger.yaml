@@ -4,6 +4,32 @@ definitions:
     properties:
       response: {}
     type: object
+  movies.CreateMovieRequest:
+    properties:
+      genre:
+        type: string
+      name:
+        type: string
+      overview:
+        type: string
+      year:
+        type: string
+    type: object
+  movies.UpdateMovieRequest:
+    properties:
+      genre:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      overview:
+        type: string
+      year:
+        type: string
+    required:
+    - id
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -39,6 +65,110 @@ paths:
           schema:
             $ref: '#/definitions/helper.ResponseBody'
       summary: Get Movies
+      tags:
+      - Movies
+    post:
+      consumes:
+      - application/json
+      description: Add a new movie to the database
+      parameters:
+      - description: Movie Data
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/movies.CreateMovieRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Movie created successfully
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: Create a new movie
+      tags:
+      - Movies
+  /movies/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a movie by its ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Movie deleted successfully
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+        "404":
+          description: Movie not found
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: Delete a movie
+      tags:
+      - Movies
+    get:
+      consumes:
+      - application/json
+      description: Get a specific movie by its ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Movie details
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+        "404":
+          description: Movie not found
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: Get movie by ID
+      tags:
+      - Movies
+    put:
+      consumes:
+      - application/json
+      description: Update details of an existing movie
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Movie Data
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/movies.UpdateMovieRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Movie updated successfully
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/helper.ResponseBody'
+      summary: Update a movie
       tags:
       - Movies
   /movies/favorite:

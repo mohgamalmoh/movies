@@ -42,6 +42,41 @@ func (_m *Service) CSVImport() error {
 	return r0
 }
 
+// Create provides a mock function with given fields: request
+func (_m *Service) Create(request movies.CreateMovieRequest) (movies.Movie, error) {
+	ret := _m.Called(request)
+
+	var r0 movies.Movie
+	if rf, ok := ret.Get(0).(func(movies.CreateMovieRequest) movies.Movie); ok {
+		r0 = rf(request)
+	} else {
+		r0 = ret.Get(0).(movies.Movie)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(movies.CreateMovieRequest) error); ok {
+		r1 = rf(request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Delete provides a mock function with given fields: id
+func (_m *Service) Delete(id int) error {
+	ret := _m.Called(id)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(int) error); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // FindAll provides a mock function with given fields: ctx
 func (_m *Service) FindAll(ctx *gin.Context) movies.PaginatedMovies {
 	ret := _m.Called(ctx)
@@ -57,7 +92,7 @@ func (_m *Service) FindAll(ctx *gin.Context) movies.PaginatedMovies {
 }
 
 // GetByID provides a mock function with given fields: id
-func (_m *Service) GetByID(id int) movies.Movie {
+func (_m *Service) GetByID(id int) (movies.Movie, error) {
 	ret := _m.Called(id)
 
 	var r0 movies.Movie
@@ -67,7 +102,14 @@ func (_m *Service) GetByID(id int) movies.Movie {
 		r0 = ret.Get(0).(movies.Movie)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // GetExtendedMovieInfoByID provides a mock function with given fields: request
@@ -112,18 +154,25 @@ func (_m *Service) SearchTMDBByNameAndYear(request movies.SearchTMDBRequest) (mo
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: request
-func (_m *Service) Update(request movies.UpdateMovieRequest) error {
-	ret := _m.Called(request)
+// Update provides a mock function with given fields: id, request
+func (_m *Service) Update(id int, request movies.UpdateMovieRequest) (movies.Movie, error) {
+	ret := _m.Called(id, request)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(movies.UpdateMovieRequest) error); ok {
-		r0 = rf(request)
+	var r0 movies.Movie
+	if rf, ok := ret.Get(0).(func(int, movies.UpdateMovieRequest) movies.Movie); ok {
+		r0 = rf(id, request)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(movies.Movie)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int, movies.UpdateMovieRequest) error); ok {
+		r1 = rf(id, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 type mockConstructorTestingTNewService interface {

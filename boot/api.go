@@ -6,9 +6,6 @@ import (
 	"github.com/morkid/paginate"
 	log "github.com/sirupsen/logrus"
 	"movies/config"
-	movies2 "movies/definitions/movies"
-	"movies/definitions/movies_sync_status"
-	"movies/definitions/users"
 	"movies/pkg/database"
 	"movies/pkg/modules/auth"
 	redis2 "movies/pkg/modules/clients/redis"
@@ -27,11 +24,6 @@ func APIBoot() *gin.Engine {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	db.Table("movies").AutoMigrate(&movies2.Movie{})
-	db.Table("users").AutoMigrate(&users.User{})
-	db.Table("users_movies").AutoMigrate(&users.UsersMovies{})
-	db.Table("movies_sync_status").AutoMigrate(&movies_sync_status.MoviesSyncStatus{})
 
 	pg := paginate.New()
 	// Repository

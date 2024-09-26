@@ -1,6 +1,6 @@
 BEGIN;
 
-create table public.movies
+create table movies
 (
     id       serial
         primary key,

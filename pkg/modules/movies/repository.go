@@ -1,12 +1,12 @@
 package movies
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/morkid/paginate"
 	"movies/definitions/movies"
 	"movies/definitions/movies_sync_status"
 	"movies/definitions/users"
-	"strconv"
 	"strings"
 
 	"gorm.io/gorm"
@@ -21,7 +21,26 @@ func NewRepository(Db *gorm.DB, Pagination *paginate.Pagination) Repository {
 	return Repository{Db: Db, Pagination: Pagination}
 }
 
-// FindAll implements TagsRepository
+func (t Repository) Create(movie movies.Movie) (movies.Movie, error) {
+	err := t.Db.Create(&movie).Error
+	if err != nil {
+		return movies.Movie{}, err
+	}
+	return movie, nil
+}
+
+func (t Repository) GetByID(id int) (movies.Movie, error) {
+	var movie movies.Movie
+	err := t.Db.First(&movie, id).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return movie, fmt.Errorf("movie with ID %d not found", id)
+		}
+		return movie, err
+	}
+	return movie, nil
+}
+
 func (t Repository) FindAll(ctx *gin.Context) (paginate.Page, []movies.Movie) {
 	var movies []movies.Movie
 	pg := paginate.New()
@@ -41,15 +60,28 @@ func (t Repository) FindAll(ctx *gin.Context) (paginate.Page, []movies.Movie) {
 	return pagination, movies
 }
 
-func (t Repository) GetByID(id int) movies.Movie {
-	movie := movies.Movie{Id: strconv.Itoa(id)}
-	t.Db.Find(&movie)
-	return movie
+func (t Repository) Update(movie movies.Movie) error {
+	err := t.Db.Save(&movie).Error
+	if err != nil {
+		return fmt.Errorf("failed to update movie: %v", err)
+	}
+	return nil
 }
 
-func (t Repository) Update(request movies.UpdateMovieRequest) error {
-	movie := movies.Movie{Id: strconv.Itoa(request.Id), Overview: request.Overview}
-	t.Db.Updates(&movie)
+func (t Repository) Delete(id int) error {
+	var movie movies.Movie
+	err := t.Db.First(&movie, id).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return fmt.Errorf("movie with ID %d not found", id)
+		}
+		return err
+	}
+
+	err = t.Db.Delete(&movie).Error
+	if err != nil {
+		return fmt.Errorf("failed to delete movie with ID %d: %v", id, err)
+	}
 	return nil
 }
 
@@ -66,7 +98,6 @@ func (t Repository) AddToFavorites(userID int, movieID int) error {
 	if err != nil {
 		return err
 	}
-	//helper.ErrorPanic(result.Error)
 	return nil
 }
 

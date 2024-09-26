@@ -52,6 +52,44 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Add a new movie to the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Create a new movie",
+                "parameters": [
+                    {
+                        "description": "Movie Data",
+                        "name": "movie",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/movies.CreateMovieRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Movie created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
             }
         },
         "/movies/favorite": {
@@ -155,6 +193,125 @@
                     }
                 }
             }
+        },
+        "/movies/{id}": {
+            "get": {
+                "description": "Get a specific movie by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Get movie by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Movie ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Movie details",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Movie not found",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update details of an existing movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Update a movie",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Movie ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated Movie Data",
+                        "name": "movie",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/movies.UpdateMovieRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Movie updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a movie by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Delete a movie",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Movie ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Movie deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Movie not found",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ResponseBody"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -162,6 +319,46 @@
             "type": "object",
             "properties": {
                 "response": {}
+            }
+        },
+        "movies.CreateMovieRequest": {
+            "type": "object",
+            "properties": {
+                "genre": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "overview": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "movies.UpdateMovieRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "genre": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "overview": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
             }
         }
     }

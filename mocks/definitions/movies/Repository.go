@@ -30,6 +30,27 @@ func (_m *Repository) AddToFavorites(userID int, movieID int) error {
 	return r0
 }
 
+// Create provides a mock function with given fields: movie
+func (_m *Repository) Create(movie movies.Movie) (movies.Movie, error) {
+	ret := _m.Called(movie)
+
+	var r0 movies.Movie
+	if rf, ok := ret.Get(0).(func(movies.Movie) movies.Movie); ok {
+		r0 = rf(movie)
+	} else {
+		r0 = ret.Get(0).(movies.Movie)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(movies.Movie) error); ok {
+		r1 = rf(movie)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateBatch provides a mock function with given fields: _a0
 func (_m *Repository) CreateBatch(_a0 *[]movies.Movie) error {
 	ret := _m.Called(_a0)
@@ -37,6 +58,20 @@ func (_m *Repository) CreateBatch(_a0 *[]movies.Movie) error {
 	var r0 error
 	if rf, ok := ret.Get(0).(func(*[]movies.Movie) error); ok {
 		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Delete provides a mock function with given fields: id
+func (_m *Repository) Delete(id int) error {
+	ret := _m.Called(id)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(int) error); ok {
+		r0 = rf(id)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -68,7 +103,7 @@ func (_m *Repository) FindAll(ctx *gin.Context) (paginate.Page, []movies.Movie) 
 }
 
 // GetByID provides a mock function with given fields: id
-func (_m *Repository) GetByID(id int) movies.Movie {
+func (_m *Repository) GetByID(id int) (movies.Movie, error) {
 	ret := _m.Called(id)
 
 	var r0 movies.Movie
@@ -78,7 +113,14 @@ func (_m *Repository) GetByID(id int) movies.Movie {
 		r0 = ret.Get(0).(movies.Movie)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // GetLastSyncedMovie provides a mock function with given fields:
@@ -102,13 +144,13 @@ func (_m *Repository) GetLastSyncedMovie() (string, error) {
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: request
-func (_m *Repository) Update(request movies.UpdateMovieRequest) error {
-	ret := _m.Called(request)
+// Update provides a mock function with given fields: _a0
+func (_m *Repository) Update(_a0 movies.Movie) error {
+	ret := _m.Called(_a0)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(movies.UpdateMovieRequest) error); ok {
-		r0 = rf(request)
+	if rf, ok := ret.Get(0).(func(movies.Movie) error); ok {
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
 	}

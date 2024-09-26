@@ -22,6 +22,16 @@ type SearchTMDBRequest struct {
 
 type UpdateMovieRequest struct {
 	Id       int    `validate:"required"`
+	Name     string `json:"name"`
+	Genre    string `json:"genre"`
+	Year     string `json:"year"`
+	Overview string `json:"overview"`
+}
+
+type CreateMovieRequest struct {
+	Name     string `json:"name"`
+	Genre    string `json:"genre"`
+	Year     string `json:"year"`
 	Overview string `json:"overview"`
 }
 
@@ -34,9 +44,11 @@ type MovieOverview struct {
 }
 
 type MovieResponse struct {
-	Id    string `json:"id"`
-	Name  string `json:"name"`
-	Genre string `json:"genre"`
+	Id       string `json:"id"`
+	Name     string `json:"name"`
+	Genre    string `json:"genre"`
+	Year     string `json:"year"`
+	Overview string `json:"overview"`
 }
 
 type Pagination struct {

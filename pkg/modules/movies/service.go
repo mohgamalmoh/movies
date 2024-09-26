@@ -32,6 +32,81 @@ func NewService(client tmdb.TMDBClient, authService auth.AuthService, redisClien
 	}
 }
 
+func (s *Service) Create(request moviesDefinition.CreateMovieRequest) (movies.Movie, error) {
+	// Create a new movie struct from the request data
+	movie := movies.Movie{
+		Name:     request.Name,
+		Genre:    request.Genre,
+		Year:     request.Year,
+		Overview: request.Overview,
+	}
+
+	movie, err := s.MoviesRepository.Create(movie)
+	if err != nil {
+		return movies.Movie{}, fmt.Errorf("failed to create movie: %v", err)
+	}
+
+	return movie, nil
+}
+
+func (s *Service) GetByID(id int) (movies.Movie, error) {
+	// Retrieve the movie by its ID from the repository
+	movie, err := s.MoviesRepository.GetByID(id)
+	if err != nil {
+		return movies.Movie{}, fmt.Errorf("movie with ID %d not found: %v", id, err)
+	}
+
+	// Return the movie data
+	return movie, nil
+}
+
+func (s *Service) Update(id int, request moviesDefinition.UpdateMovieRequest) (movies.Movie, error) {
+	// Get the existing movie from the repository
+	movie, err := s.MoviesRepository.GetByID(id)
+	if err != nil {
+		return movies.Movie{}, fmt.Errorf("movie with ID %d not found: %v", id, err)
+	}
+
+	// Update the movie fields based on the request data
+	if request.Name != "" {
+		movie.Name = request.Name
+	}
+	if request.Genre != "" {
+		movie.Genre = request.Genre
+	}
+	if request.Year != "" {
+		movie.Year = request.Year
+	}
+	if request.Overview != "" {
+		movie.Overview = request.Overview
+	}
+
+	// Call the repository to update the movie
+	err = s.MoviesRepository.Update(movie)
+	if err != nil {
+		return movies.Movie{}, fmt.Errorf("failed to update movie: %v", err)
+	}
+
+	// Return the updated movie
+	return movie, nil
+}
+
+func (s *Service) Delete(id int) error {
+	// First, check if the movie exists by getting it from the repository
+	_, err := s.MoviesRepository.GetByID(id)
+	if err != nil {
+		return fmt.Errorf("movie with ID %d not found: %v", id, err)
+	}
+
+	// Call the repository to delete the movie
+	err = s.MoviesRepository.Delete(id)
+	if err != nil {
+		return fmt.Errorf("failed to delete movie with ID %d: %v", id, err)
+	}
+
+	return nil
+}
+
 // FindAll implements Service
 func (s *Service) FindAll(ctx *gin.Context) moviesDefinition.PaginatedMovies {
 	pag, items := s.MoviesRepository.FindAll(ctx)
@@ -57,16 +132,6 @@ func (s *Service) FindAll(ctx *gin.Context) moviesDefinition.PaginatedMovies {
 	return PaginateMovies
 }
 
-func (s *Service) GetByID(id int) movies.Movie {
-	movie := s.MoviesRepository.GetByID(id)
-	return movie
-}
-
-func (s *Service) Update(request moviesDefinition.UpdateMovieRequest) error {
-	movie := s.MoviesRepository.Update(request)
-	return movie
-}
-
 func (s *Service) SearchTMDBByNameAndYear(request moviesDefinition.SearchTMDBRequest) (moviesDefinition.MovieDetailResponse, error) {
 	info, err := s.client.SearchTMDBByNameAndYear(request)
 	if err != nil {
@@ -80,7 +145,10 @@ func (s *Service) GetExtendedMovieInfoByID(req moviesDefinition.ExtendMovieInfoR
 	overview, redisErr := s.RedisClient.GetCache(fmt.Sprintf("movie_overview:%d", req.ID))
 	if errors.Is(redisErr, redis.Nil) {
 		fmt.Println("Cache miss: Details not found in Redis")
-		movie := s.GetByID(req.ID)
+		movie, err := s.GetByID(req.ID)
+		if err != nil {
+			return overview, err
+		}
 		if movie.Overview != "" {
 			overview = movie.Overview
 		} else {
@@ -102,7 +170,7 @@ func (s *Service) GetExtendedMovieInfoByID(req moviesDefinition.ExtendMovieInfoR
 				return "", err
 			}
 
-			err = s.Update(moviesDefinition.UpdateMovieRequest{
+			movie, err = s.Update(req.ID, moviesDefinition.UpdateMovieRequest{
 				Id:       req.ID,
 				Overview: overview,
 			})
@@ -120,8 +188,10 @@ func (s *Service) GetExtendedMovieInfoByID(req moviesDefinition.ExtendMovieInfoR
 }
 
 func (s *Service) AddToFavorites(movieID int) error {
-	movie := s.GetByID(movieID)
-
+	movie, err := s.GetByID(movieID)
+	if err != nil {
+		return err
+	}
 	infoReq := movies.SearchTMDBRequest{
 		Query: movie.Name,
 		Year:  movie.Year,
@@ -135,10 +205,11 @@ func (s *Service) AddToFavorites(movieID int) error {
 		return errors.New("No data found in TMDB")
 	}
 
-	err = s.Update(movies.UpdateMovieRequest{
+	updateRequest := moviesDefinition.UpdateMovieRequest{
 		Id:       movieID,
 		Overview: movieDetails.Data[0].Overview,
-	})
+	}
+	movie, err = s.Update(movieID, updateRequest)
 	if err != nil {
 		return err
 	}

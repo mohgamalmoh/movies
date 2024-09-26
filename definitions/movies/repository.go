@@ -6,9 +6,11 @@ import (
 )
 
 type Repository interface {
+	Create(movie Movie) (Movie, error)
+	Delete(id int) error
 	FindAll(ctx *gin.Context) (paginate.Page, []Movie)
-	GetByID(id int) Movie
-	Update(request UpdateMovieRequest) error
+	GetByID(id int) (Movie, error)
+	Update(Movie) error
 	CreateBatch(movies *[]Movie) error
 	AddToFavorites(userID int, movieID int) error
 	GetLastSyncedMovie() (string, error)

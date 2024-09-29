@@ -3,6 +3,7 @@ package cmd
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"movies/config"
 	"movies/pkg/database"
 	"movies/pkg/migrations"
 )
@@ -19,7 +20,11 @@ func Migrations() *cobra.Command {
 }
 
 func runMigrations(args []string) {
-	db, err := database.NewDatabase()
+	cfg, err := config.NewMigrationsConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+	db, err := database.NewDatabase(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}

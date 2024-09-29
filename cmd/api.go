@@ -31,7 +31,7 @@ func runAPI() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	engine := boot.APIBoot()
+	engine := boot.APIBoot(cfg)
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.HTTPPort),

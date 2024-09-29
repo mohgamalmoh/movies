@@ -2,23 +2,14 @@ package config
 
 import (
 	"github.com/go-redis/redis/v8"
-	"strconv"
 )
 
-const (
-	redisHost     = "redis"
-	redisPort     = 6379
-	redisUser     = "default"
-	redisPassword = "pass"
-	redisDBName   = 0
-)
-
-func RedisConnection() *redis.Client {
+func RedisConnection(cfg RedisDatabase) *redis.Client {
 	db := redis.NewClient(&redis.Options{
-		Addr:     redisHost + ":" + strconv.FormatUint(redisPort, 10), // Redis server address
-		Username: redisUser,
-		Password: redisPassword, // No password set
-		DB:       redisDBName,   // Use default DB
+		Addr:     cfg.Host + ":" + cfg.Port,
+		Username: cfg.User,
+		Password: cfg.Password,
+		DB:       cfg.Name,
 	})
 	return db
 }

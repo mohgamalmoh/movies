@@ -10,3 +10,11 @@ type Database struct {
 	MaxIdleConnections    int    `env:"DB_MAX_IDLE_CONNECTIONS" envDefault:"5"`
 	ConnectionMaxLifeTime int    `env:"DB_CONNECTION_MAX_LIFETIME" envDefault:"300"`
 }
+
+type RedisDatabase struct {
+	Host     string `env:"REDIS_DB_HOST,required"`
+	Port     string `env:"REDIS_DB_PORT"`
+	User     string `env:"REDIS_DB_USER,required"`
+	Password string `env:"REDIS_DB_PASSWORD,required"`
+	Name     int    `env:"REDIS_DB_NAME,required"`
+}

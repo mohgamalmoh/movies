@@ -15,12 +15,10 @@ import (
 	"movies/router"
 )
 
-const ServiceName = "ads-auctions"
-
-func APIBoot() *gin.Engine {
+func APIBoot(cfg config.API) *gin.Engine {
 
 	fmt.Println("starting API ......")
-	db, err := database.NewDatabase()
+	db, err := database.NewDatabase(cfg.DB)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +30,7 @@ func APIBoot() *gin.Engine {
 	//clients
 	tMDBClient := tmdb.NewClient()
 
-	redisConn := config.RedisConnection()
+	redisConn := config.RedisConnection(cfg.Redis)
 	redisClient := redis2.NewRedisClient(redisConn)
 	// Service
 	authSerivce := auth.NewAuthServiceImpl()

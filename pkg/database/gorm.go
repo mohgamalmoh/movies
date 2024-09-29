@@ -5,18 +5,11 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"movies/config"
 )
 
-const (
-	host     = "db"
-	port     = 5432
-	user     = "postgres"
-	password = "postgres"
-	dbName   = "test"
-)
-
-func NewDatabase() (*gorm.DB, error) {
-	sqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbName)
+func NewDatabase(cfg config.Database) (*gorm.DB, error) {
+	sqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Name)
 	gormConfig := getCfg()
 	db, err := gorm.Open(postgres.Open(sqlInfo), &gormConfig)
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 type API struct {
 	HTTPPort int `env:"HTTP_PORT" envDefault:"8080"`
 	DB       Database
+	Redis    RedisDatabase
 }
 
 func NewAPIConfig() (API, error) {
